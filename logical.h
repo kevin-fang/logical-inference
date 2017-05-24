@@ -30,8 +30,6 @@ struct sets {
   List nextNegParticular;
 };
 
-
-
 // Adding premises to the system:
 
 // add a universal affirmative

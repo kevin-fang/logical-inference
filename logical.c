@@ -86,6 +86,7 @@ void assertPN(Term a, Term b) {
 // Querying permises for the system
 
 // query a universal affirmative
+// todo: implement particulars
 bool queryUA(Term a, Term b) {
   List list = a->inferences->nextPosUniversal;
   while (list != NULL) {
@@ -100,7 +101,9 @@ bool queryUA(Term a, Term b) {
   }
   return false;
 }
+
 // query a universal negative
+// todo: implement particulars
 bool queryUN(Term a, Term b) {
   List list = a->inferences->nextNegUniversal;
   while (list != NULL) {
@@ -115,6 +118,7 @@ bool queryUN(Term a, Term b) {
   }
   return false;
 }
+
 // query a particular affirmative
 bool queryPA(Term a, Term b) {
   return false;
