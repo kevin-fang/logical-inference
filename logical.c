@@ -13,13 +13,19 @@ void checkAndInitialize(Term term) {
 
 // add a universal affirmative
 void assertUA(Term a, Term b) {
-  // check if a and b are just titles and if so , initialize universal and particular arrays
+  // check if a and b are just titles and if so, initialize universal and particular arrays
   checkAndInitialize(a);
   checkAndInitialize(b);
 
   // loop through linked list containing universal positives and check if the term is already exists
   // if the term is already there, break out
   List list = a->univ->nextPos;
+  if (list == NULL) {
+    a->univ->nextPos = malloc(sizeof(struct node));
+    a->univ->nextPos->term = b;
+    return;
+  }
+
   while (list != NULL) {
     if (list->term == b) {
       return;
@@ -30,7 +36,7 @@ void assertUA(Term a, Term b) {
   // the term does not already exist, so add it to the list
   List listToAdd = malloc(sizeof(struct node));
   listToAdd->term = b;
-  a->univ->nextPos->next = a->univ->nextPos;
+  listToAdd->next = a->univ->nextPos;
   a->univ->nextPos = listToAdd;
 }
 
