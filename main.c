@@ -10,34 +10,48 @@
  * Particular Negative: Some A are not B
  */
 
-bool testUA() {
-    Term termA = malloc(sizeof(struct term));
+void testUA() {
+    Term termA = calloc(1, sizeof(struct term));
     termA->title = "A";
-    Term termB = malloc(sizeof(struct term));
+    Term termB = calloc(1, sizeof(struct term));
     termB->title = "B";
-    Term termC = malloc(sizeof(struct term));
+    Term termC = calloc(1, sizeof(struct term));
     termC->title = "C";
+    Term termD = calloc(1, sizeof(struct term));
+    termC->title = "D";
 
-    assertUA(termA, termB);
+    assertUA(termA, termB); // A -> B
+    assertUA(termB, termC); // B -> C
+    assertUA(termA, termD); // A -> D
+    assert(queryUA(termA, termB)); // A -> B
+    printf("A -> B good\n");
+    assert(queryUA(termB, termC)); // B -> C
+    printf("B -> C good\n");
+    assert(queryUA(termA, termD)); // A -> D
+    printf("A -> D good\n");
+    assert(queryUA(termA, termC)); // A -> C
+    printf("A -> C good");
+    assert(!queryUA(termB, termD)); // B -> D
+    printf("B -> D good\n");
 
-    assertUA(termB, termC);
 
-    return queryUA(termA, termC);
+    assertUA(termB, termD);
+    assert(queryUA(termB, termD));
+    printf("Successful!\n");
+
 }
 
-bool testUN() {
-  return false;
+void testUN() {
 }
 
-bool testPN() {
-  return false;
+void testPN() {
+
 }
 
-bool testPA() {
-  return false;
+void testPA() {
+  
 }
 
 int main() {
-  printf("start");
-  assert(testUA());
+  testUA();
 }

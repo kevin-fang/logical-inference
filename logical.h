@@ -10,14 +10,12 @@
 
 typedef char* String;
 typedef struct term *Term;
-typedef struct universals *Universals;
-typedef struct particulars *Particulars;
+typedef struct sets *Set;
 typedef struct node *List;
 
 struct term {
    String title;
-   Universals univ;
-   Particulars part;
+   Set inferences;
 };
 
 struct node {
@@ -25,15 +23,13 @@ struct node {
   List next;
 };
 
-struct universals {
-  List nextPos;
-  List nextNeg;
+struct sets {
+  List nextPosUniversal;
+  List nextNegUniversal;
+  List nextPosParticular;
+  List nextNegParticular;
 };
 
-struct particulars {
-  List nextPos;
-  List nextNeg;
-};
 
 
 // Adding premises to the system:

@@ -3,11 +3,8 @@
 #include <stdlib.h>
 
 void checkAndInitialize(Term term) {
-  if (term->univ == NULL) {
-    term->univ = malloc(sizeof(struct universals));
-  }
-  if (term->part == NULL) {
-    term->part = malloc(sizeof(struct particulars));
+  if (term->inferences == NULL) {
+    term->inferences = calloc(1, sizeof(struct sets));
   }
 }
 
@@ -19,10 +16,11 @@ void assertUA(Term a, Term b) {
 
   // loop through linked list containing universal positives and check if the term is already exists
   // if the term is already there, break out
-  List list = a->univ->nextPos;
+  //printf("%p %p %p\n", a, a->inferences, a->inferences->nextPosUniversal);
+  List list = a->inferences->nextPosUniversal;
   if (list == NULL) {
-    a->univ->nextPos = malloc(sizeof(struct node));
-    a->univ->nextPos->term = b;
+    a->inferences->nextPosUniversal = calloc(1, sizeof(struct node));
+    a->inferences->nextPosUniversal->term = b;
     return;
   }
 
@@ -36,8 +34,8 @@ void assertUA(Term a, Term b) {
   // the term does not already exist, so add it to the list
   List listToAdd = malloc(sizeof(struct node));
   listToAdd->term = b;
-  listToAdd->next = a->univ->nextPos;
-  a->univ->nextPos = listToAdd;
+  listToAdd->next = a->inferences->nextPosUniversal;
+  a->inferences->nextPosUniversal = listToAdd;
 }
 
 // add a universal negative
@@ -57,9 +55,13 @@ void assertPN(Term a, Term b) {
 
 // query a universal affirmative
 bool queryUA(Term a, Term b) {
-  List list = a->univ->nextPos;
+  List list = a->inferences->nextPosUniversal;
   while (list != NULL) {
-    if (list->term == b) {
+    Term term = list->term;
+    if (term == b) {
+      return true;
+    }
+    if (queryUA(term, b)) {
       return true;
     }
     list = list->next;
