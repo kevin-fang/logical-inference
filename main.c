@@ -10,6 +10,7 @@
  * Particular Negative: Some A are not B
  */
 
+// test universal affirmatives
 void testUA() {
     Term termA = calloc(1, sizeof(struct term));
     termA->title = "A";
@@ -33,7 +34,6 @@ void testUA() {
     printf("A -> C good");
     assert(!queryUA(termB, termD)); // B -> D
     printf("B -> D good\n");
-
 
     assertUA(termB, termD);
     assert(queryUA(termB, termD));
