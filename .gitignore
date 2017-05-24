@@ -1,0 +1,6 @@
+*.gch
+*.o
+*.d
+*.dSYM
+*.idb
+*.pdb
