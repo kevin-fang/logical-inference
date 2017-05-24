@@ -31,12 +31,13 @@ void testUA() {
     assert(queryUA(termA, termD)); // A -> D
     printf("A -> D good\n");
     assert(queryUA(termA, termC)); // A -> C
-    printf("A -> C good");
+    printf("A -> C good\n");
     assert(!queryUA(termB, termD)); // B -> D
-    printf("B -> D good\n");
+    printf("B -!> D good\n");
 
     assertUA(termB, termD);
     assert(queryUA(termB, termD));
+    printf("B -> D good\n");
     printf("Successful!\n");
 
 }

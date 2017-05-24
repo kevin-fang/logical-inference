@@ -11,10 +11,12 @@ void checkAndInitialize(Term term) {
 
 // add a universal affirmative
 void assertUA(Term a, Term b) {
-  assert(!queryUN(a, b));
-  // check if a and b are just titles and if so, initialize universal and particular arrays
   checkAndInitialize(a);
   checkAndInitialize(b);
+  if (a->inferences->nextNegUniversal != NULL && b->inferences->nextNegUniversal != NULL) {
+    assert(!queryUN(a, b));
+  }
+  // check if a and b are just titles and if so, initialize universal and particular arrays
 
   // loop through linked list containing universal positives and check if the term is already exists
   // if the term is already there, break out
@@ -42,10 +44,12 @@ void assertUA(Term a, Term b) {
 
 // add a universal negative
 void assertUN(Term a, Term b) {
-  assert(!queryUA(a, b));
   // check if a and b are just titles and if so, initialize universal and particular arrays
   checkAndInitialize(a);
   checkAndInitialize(b);
+  if (a->inferences->nextPosUniversal != NULL && a->inferences->nextPosUniversal != NULL) {
+    assert(!queryUA(a, b));
+  }
 
   // loop through linked list containing universal positives and check if the term is already exists
   // if the term is already there, break out
