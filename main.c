@@ -27,17 +27,17 @@ void testUA() {
     assertUA(termA, termD); // A -> D
     //assertUN(termA, termB); -> this should cause an assertion error, as it's a contradiction
     assert(queryUA(termA, termB)); // A -> B
-    printf("A -> B\n");
+    //printf("A -> B\n");
     assert(!queryUN(termA, termB));
-    printf("not A -!> B\n");
+    //printf("not A -!> B\n");
     assert(queryUA(termB, termC)); // B -> C
-    printf("B -> C\n");
+    //printf("B -> C\n");
     assert(queryUA(termA, termD)); // A -> D
-    printf("A -> D\n");
+    //printf("A -> D\n");
     assert(queryUA(termA, termC)); // A -> C
-    printf("A -> C\n");
+    //printf("A -> C\n");
     assert(!queryUA(termB, termD)); // B -> D
-    printf("B -!> D\n");
+    //printf("B -!> D\n");
 
     assertUA(termB, termD);
     assert(queryUA(termB, termD));
@@ -58,19 +58,19 @@ void testUN() {
     assertUN(termA, termD); // A -!> D
     //assertUA(termA, termB); -> this should cause an assertion error, as it's a contradiction
     assert(queryUN(termA, termB)); // A -> B
-    printf("A -> B\n");
+    //printf("A -> B\n");
     assert(queryUN(termB, termC)); // B -> C
-    printf("B -> C\n");
+    //printf("B -> C\n");
     assert(queryUN(termA, termD)); // A -> D
-    printf("A -> D\n");
+    //printf("A -> D\n");
     assert(queryUN(termA, termC)); // A -> C
-    printf("A -> C\n");
+    //printf("A -> C\n");
     assert(!queryUN(termB, termD)); // B -> D
-    printf("B -!> D\n");
+    //printf("B -!> D\n");
 
     assertUA(termB, termD);
     assert(queryUA(termB, termD));
-    printf("B -> D\n");
+    //printf("B -> D\n");
     printf(GRN "UN successful!\n\n" RESET);
 }
 
@@ -86,13 +86,13 @@ void testPA() {
     assertPA(termB, termC);
     assertPA(termA, termD);
     assert(queryPA(termA, termB));
-    printf("A ~> B \n");
+    //printf("A ~> B \n");
     assert(!queryUA(termA, termC));
-    printf("A -!>C \n");
+    //printf("A -!>C \n");
     assert(!queryPA(termB, termD));
-    printf("B ~!> D \n");
+    //printf("B ~!> D \n");
     assert(!queryPA(termA, termC));
-    printf("A ~!> C \n");
+    //printf("A ~!> C \n");
     printf(GRN "PA successful!\n\n" RESET);
 }
 
@@ -108,15 +108,15 @@ void testPN() {
     assertPN(termB, termC);
     assertPN(termA, termD);
     assert(queryPN(termA, termB));
-    printf("A ~!> B \n");
+    //printf("A ~!> B \n");
     assert(!queryUN(termA, termC));
-    printf("A -!>C \n");
+    //printf("A -!>C \n");
     assert(!queryPN(termB, termD));
-    printf("B ~!> D \n");
+    //printf("B ~!> D \n");
     assert(!queryPN(termA, termC));
-    printf("A ~!> C \n");
+    //printf("A ~!> C \n");
     assert(!queryPN(termB, termD));
-    printf("A ~!> B\n");
+    //printf("A ~!> B\n");
     printf(GRN "PN successful!\n\n" RESET);
 }
 
