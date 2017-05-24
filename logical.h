@@ -31,6 +31,7 @@ struct sets {
 };
 
 // Adding premises to the system:
+Term makeTerm(String title);
 
 // add a universal affirmative
 void assertUA(Term a, Term b);
