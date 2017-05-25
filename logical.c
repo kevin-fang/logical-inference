@@ -242,7 +242,7 @@ bool queryPA(Term a, Term b) {
 
   List univ = a->inferences->nextPosUniversal;
   while (univ != NULL) {
-    if (queryPA(univ->term, b)) {
+    if (queryUA(univ->term, b)) {
       return true;
     }
     univ = univ->next;
@@ -269,7 +269,7 @@ bool queryPN(Term a, Term b) {
 
     List univ = a->inferences->nextNegUniversal;
     while (univ != NULL) {
-      if (queryPN(univ->term, b)) {
+      if (queryUN(univ->term, b)) {
         return true;
       }
       univ = univ->next;
