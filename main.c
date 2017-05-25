@@ -127,15 +127,16 @@ void testCombined() {
   Term reptile = makeTerm("Reptile");
   Term bird = makeTerm("Bird");
 
-  assertUA(mammal, animal); // all humans are animals
-  assertUA(human, mammal);
-  assertUN(mammal, reptile);
+  assertUA(mammal, animal); // all mammals are animals
+  assertUA(human, mammal); // all humans are mammals
+  assertUN(mammal, reptile); // no mammals are reptiles
+  assertUA(bird, animal); // all birds are animals
 
-  assertUA(bird, animal);
-  assertUA(human, reptile); // should not happen
-  assert(queryPA(human, animal));
-  assert(!queryUA(human, bird));
-  assert(!queryUA(bird, mammal));
+  assert(!queryUN(reptile, mammal)); // assert that no reptiles are mammals
+  //assertUA(human, reptile); // should not happen -- assertion error should occur
+  assert(queryUA(human, animal)); // some humans are animals
+  assert(!queryUA(human, bird)); // not all humans are birds - not enough information
+  assert(!queryUA(bird, mammal)); // not all birds are mammals
   printf(GRN "Combined test successful\n" RESET);
 }
 

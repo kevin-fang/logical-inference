@@ -38,6 +38,12 @@ void assertUA(Term a, Term b) {
     a->inferences->nextPosUniversal = calloc(1, sizeof(struct node));
     a->inferences->nextPosUniversal->term = b;
     return;
+  } else {
+    List temp = list;
+    while (temp != NULL) {
+      assert(!queryPN(temp->term, b));
+      temp = temp->next;
+    }
   }
 
   // loop through linked list containing universal positives and check if the term is already exists
@@ -71,6 +77,12 @@ void assertUN(Term a, Term b) {
     a->inferences->nextNegUniversal = calloc(1, sizeof(struct node));
     a->inferences->nextNegUniversal->term = b;
     return;
+  } else {
+      List temp = list;
+      while (temp != NULL) {
+        assert(!queryPA(temp->term, b));
+        temp = temp->next;
+      }
   }
   // loop through linked list and check if the term is already exists
   // if the term is already there, break out. If not, continue
