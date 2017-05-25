@@ -4,3 +4,5 @@
 *.dSYM
 *.idb
 *.pdb
+*.exe
+logical

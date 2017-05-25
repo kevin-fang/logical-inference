@@ -179,7 +179,7 @@ bool assertPN(Term a, Term b) {
   return true;
 }
 
-// Querying permises for the system
+// Querying premises for the system
 
 // query a universal affirmative
 bool queryUA(Term a, Term b) {

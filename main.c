@@ -5,7 +5,7 @@
 #include <string.h>
 #include "test.h"
 
-#define printInstructions() printf("Instructions: \nASSERT ALL A are B, QUERY ALL A are B\nASSERT NO A are B, QUERY NO A are B\nASSERT SOME A are B, QUERY SOME A are B\nASSERT NOTSOME A are B, QUERY NOTSOME A are B\n")
+#define printInstructions() printf("Instructions: \nASSERT ALL A are B, QUERY ALL A are B\nASSERT NO A are B, QUERY NO A are B\nASSERT SOME A are B, QUERY SOME A are B\nASSERT NOTSOME A are B, QUERY NOTSOME A are B\n\n")
 #define DEFAULT_ALLOC_SIZE 10
 
 #define GRN "\x1B[32m"
@@ -85,7 +85,7 @@ String getSecondTitle(String line, String query) {
   int fourthIndex = strchr(line + thirdIndex, ' ') - line;
   String word = malloc(sizeof(char) * (fourthIndex - index) + 1);
   strcpy(word, line + fourthIndex + 1);
-  word[fourthIndex - thirdIndex] = '\0';
+  word[fourthIndex - index] = '\0';
   return word;
 }
 
@@ -112,9 +112,10 @@ bool inList(List list, String title) {
 #define NOTSOME "NOTSOME"
 #define NO "NO"
 
-// TODO DEAL WITH ALL/SOME
 int main() {
-  //testCombined();
+  testCombined();
+
+	//printf("LOGIC: %d\n", queryUA(cat, kevin));
 
   printInstructions();
   printf("> ");
@@ -140,6 +141,7 @@ int main() {
       String firstWord = getFirstTitle(curLine, ASSERT);
       String keyWord = getKeyword(curLine, ASSERT);
       String secondWord = getSecondTitle(curLine, ASSERT);
+			//printf("assert first word:%s, second word:%s, keyword:%s;", firstWord, secondWord, keyWord);
       Term firstTerm;
       Term secondTerm;
       if (!inList(terms, firstWord)) {
@@ -162,14 +164,24 @@ int main() {
       }
       if (strcmp(keyWord, ALL) == 0) {
         if (!assertUA(firstTerm, secondTerm)) {
-          printf("Presents a contradiction.\n");
+          printf("Presents a contradiction.\n> ");
+					continue;
         };
       } else if (strcmp(keyWord, NO) == 0) {
-        assertUN(firstTerm, secondTerm);
+        if (!assertUN(firstTerm, secondTerm)) {
+					printf("Presents a contradiction.\n> ");
+					continue;
+				}
       } else if (strcmp(keyWord, SOME) == 0) {
-        assertPA(firstTerm, secondTerm);
+        if (!assertPA(firstTerm, secondTerm)) {
+					printf("Presents a contradiction\n> ");
+					continue;
+				}
       } else if (strcmp(keyWord, NOTSOME) == 0) {
-        assertPN(firstTerm, secondTerm);
+        if (!assertPN(firstTerm, secondTerm)) {
+					printf("Presents a contradiction.\n> ");
+					continue;
+				}
       } else {
         printf("Unknown keyword: %s\n", keyWord);
         printInstructions();
@@ -181,6 +193,8 @@ int main() {
       String firstWord = getFirstTitle(curLine, QUERY);
       String keyWord = getKeyword(curLine, QUERY);
       String secondWord = getSecondTitle(curLine, QUERY);
+
+			//printf("query first word:%s, second word:%s, keyword:%s;", firstWord, secondWord, keyWord);
       Term firstTerm;
       Term secondTerm;
       if (!inList(terms, firstWord)) {
