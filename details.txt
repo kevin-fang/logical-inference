@@ -1,0 +1,27 @@
+Universal Affirmative:
+No universal negative, no particular negative
+If assertUA(A, B), 
+	No queryUN(A, B)
+	No queryPN(A, B)
+	Possible queryPA(A,B)
+
+Universal Negative:	
+No universal affirmative, no particular affirmative
+If assertUN(A, B),
+	No queryUA(A, B)
+	No queryPA(A, B)
+	Possible queryPN(A,B)
+
+Particular Affirmative:
+No universal negative, potentially partial negative or universal affirmative
+If assertPA(A,B),
+	No queryUN(A,B)
+	Possible queryUA(A,B)
+	Possible queryPN(A,B)
+
+Particular Negative:
+No universal affirmative, potentially partial affirmative or universal negative
+If assertPN(A,B),
+	No queryUA(A,B)
+	Possible queryPA(A,B)
+	Possible queryUN(A,B)
