@@ -21,7 +21,7 @@ void checkAndInitialize(Term first, Term second) {
 }
 
 // add a universal affirmative
-void assertUA(Term a, Term b) {
+bool assertUA(Term a, Term b) {
   // check if inferences are not currently null and if so, initialize
   checkAndInitialize(a, b);
 
@@ -30,14 +30,17 @@ void assertUA(Term a, Term b) {
    * Two items cannot be in a partial or universal negative
    * queryPN searches for both a partial or universal negative
   */
-  assert(!queryPN(a, b));
+  if (queryPN(a, b)) {
+    return false;
+  }
+  //assert(!queryPN(a, b));
 
   // set the list to the first item if the list is currently null
   List list = a->inferences->nextPosUniversal;
   if (list == NULL) {
     a->inferences->nextPosUniversal = calloc(1, sizeof(struct node));
     a->inferences->nextPosUniversal->term = b;
-    return;
+    return true;
   } else {
     List temp = list;
     while (temp != NULL) {
@@ -50,7 +53,7 @@ void assertUA(Term a, Term b) {
   // if the term is already there, break out. If not, continue
   while (list != NULL) {
     if (list->term == b) {
-      return;
+      return true;
     }
     list = list->next;
   }
@@ -60,23 +63,27 @@ void assertUA(Term a, Term b) {
   listToAdd->term = b;
   listToAdd->next = a->inferences->nextPosUniversal;
   a->inferences->nextPosUniversal = listToAdd;
+  return true;
 }
 
 // add a universal negative
-void assertUN(Term a, Term b) {
+bool assertUN(Term a, Term b) {
   // check if inferences are not currently null and if so, initialize
   checkAndInitialize(a, b);
   /* Check if the logic makes sense for universal negative and if not, exit the program
    * Universal Negative:
    * Two items cannot be in a partial or universal affirmative
   */
-  assert(!queryPA(a, b));
+  if (queryPA(a, b)) {
+    return false;
+  }
+  //assert(!queryPA(a, b));
     // set the list to the first item if the list is currently null
   List list = a->inferences->nextNegUniversal;
   if (list == NULL) {
     a->inferences->nextNegUniversal = calloc(1, sizeof(struct node));
     a->inferences->nextNegUniversal->term = b;
-    return;
+    return true;
   } else {
       List temp = list;
       while (temp != NULL) {
@@ -88,7 +95,7 @@ void assertUN(Term a, Term b) {
   // if the term is already there, break out. If not, continue
   while (list != NULL) {
     if (list->term == b) {
-      return;
+      return true;
     }
     list = list->next;
   }
@@ -98,14 +105,18 @@ void assertUN(Term a, Term b) {
   listToAdd->term = b;
   listToAdd->next = a->inferences->nextNegUniversal;
   a->inferences->nextNegUniversal = listToAdd;
+  return true;
 }
 
 // add a particular affirmative
-void assertPA(Term a, Term b) {
+bool assertPA(Term a, Term b) {
   // check and initialize inference structs for A and B
   checkAndInitialize(a, b);
 
   // For a particular affirmative, a universal negative containing those two cannot exist
+  if (queryUN(a, b)) {
+    return false;
+  }
   assert(!queryUN(a, b));
 
   // set first item if list is empty
@@ -113,14 +124,14 @@ void assertPA(Term a, Term b) {
   if (list == NULL) {
     a->inferences->nextPosParticular = calloc(1, sizeof(struct node));
     a->inferences->nextPosParticular->term = b;
-    return;
+    return true;
   }
 
   // loop through linked list of partial affirmatives and check if the term is already exists
   // if the term is already there, break out
   while (list != NULL) {
     if (list->term == b) {
-      return;
+      return true;
     }
     list = list->next;
   }
@@ -130,29 +141,32 @@ void assertPA(Term a, Term b) {
   listToAdd->term = b;
   listToAdd->next = a->inferences->nextPosParticular;
   a->inferences->nextPosParticular = listToAdd;
+  return true;
 }
 
 // add a particular negative
-void assertPN(Term a, Term b) {
+bool assertPN(Term a, Term b) {
   // initialize inference arrays
   checkAndInitialize(a, b);
 
   // for a particular negative, a universal affirmative containing the same elements cannot exist
-  assert(!queryUA(a, b));
+  if (queryUA(a, b)) {
+    return false;
+  }
 
   // set first item if list is empty
   List list = a->inferences->nextNegParticular;
   if (list == NULL) {
     a->inferences->nextNegParticular = calloc(1, sizeof(struct node));
     a->inferences->nextNegParticular->term = b;
-    return;
+    return true;
   }
 
     // loop through linked list of partial negatives and check if the term is already exists
     // if the term is already there, break out
   while (list != NULL) {
     if (list->term == b) {
-      return;
+      return true;
     }
     list = list->next;
   }
@@ -162,6 +176,7 @@ void assertPN(Term a, Term b) {
   listToAdd->term = b;
   listToAdd->next = a->inferences->nextNegParticular;
   a->inferences->nextNegParticular = listToAdd;
+  return true;
 }
 
 // Querying permises for the system
@@ -183,7 +198,6 @@ bool queryUA(Term a, Term b) {
 }
 
 // query a universal negative
-// ALL A are C and no B are C, then no A are C - how to find B?
 bool queryUN(Term a, Term b) { // human, reptile
   List list = a->inferences->nextNegUniversal;
   while (list != NULL) {
@@ -197,6 +211,7 @@ bool queryUN(Term a, Term b) { // human, reptile
     list = list->next;
   }
 
+  // if ALL A are C and NO B are C, then no A are C
   List pos = a->inferences->nextPosUniversal;
   while (pos != NULL) {
     Term term = pos->term;

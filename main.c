@@ -129,6 +129,12 @@ int main() {
   // list of created terms
   List terms = NULL;
   while ((curLine = getLine()) != NULL) {
+    if (strstr(curLine, "are") == NULL) {
+      printf("Missing keyword: are\n");
+      printInstructions();
+      printf("> ");
+      continue;
+    }
     //curLine = "ASSERT ALL AB are B";
     if (strncmp(ASSERT, curLine, strlen(ASSERT)) == 0) { // asserting
       String firstWord = getFirstTitle(curLine, ASSERT);
@@ -155,7 +161,9 @@ int main() {
         secondTerm = findInList(terms, secondWord);
       }
       if (strcmp(keyWord, ALL) == 0) {
-        assertUA(firstTerm, secondTerm);
+        if (!assertUA(firstTerm, secondTerm)) {
+          printf("Presents a contradiction.\n");
+        };
       } else if (strcmp(keyWord, NO) == 0) {
         assertUN(firstTerm, secondTerm);
       } else if (strcmp(keyWord, SOME) == 0) {
@@ -163,6 +171,7 @@ int main() {
       } else if (strcmp(keyWord, NOTSOME) == 0) {
         assertPN(firstTerm, secondTerm);
       } else {
+        printf("Unknown keyword: %s\n", keyWord);
         printInstructions();
         printf("> ");
         continue;
@@ -175,6 +184,7 @@ int main() {
       Term firstTerm;
       Term secondTerm;
       if (!inList(terms, firstWord)) {
+        printf("Bad query: %s\n", firstWord);
         printInstructions();
         printf("> ");
         continue;
@@ -182,6 +192,7 @@ int main() {
         firstTerm = findInList(terms, firstWord);
       }
       if (!inList(terms, secondWord)) {
+        printf("Bad query: %s\n", secondWord);
         printInstructions();
         printf("> ");
         continue;
@@ -198,11 +209,13 @@ int main() {
       } else if (strcmp(keyWord, NOTSOME) == 0) {
         printf("%s\n", getTrueFalse(queryPN(firstTerm, secondTerm)));
       } else {
+        printf("Bad keyword: %s\n", keyWord);
         printInstructions();
         printf("> ");
         continue;
       }
     } else {
+      printf("Bad input: %s\n", curLine);
       printInstructions();
       printf("> ");
       continue;

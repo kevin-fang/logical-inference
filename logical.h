@@ -34,13 +34,13 @@ struct sets {
 Term makeTerm(String title);
 
 // add a universal affirmative
-void assertUA(Term a, Term b);
+bool assertUA(Term a, Term b);
 // add a universal negative
-void assertUN(Term a, Term b);
+bool assertUN(Term a, Term b);
 // add a particular affirmative
-void assertPA(Term a, Term b);
+bool assertPA(Term a, Term b);
 // add a particular negative
-void assertPN(Term a, Term b);
+bool assertPN(Term a, Term b);
 
 // Querying permises for the system
 
