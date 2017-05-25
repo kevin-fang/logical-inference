@@ -167,7 +167,6 @@ void assertPN(Term a, Term b) {
 // Querying permises for the system
 
 // query a universal affirmative
-// todo: implement particulars
 bool queryUA(Term a, Term b) {
   List list = a->inferences->nextPosUniversal;
   while (list != NULL) {
@@ -184,7 +183,7 @@ bool queryUA(Term a, Term b) {
 }
 
 // query a universal negative
-// todo: implement particulars
+// ALL A are C and no B are C, then no A are C - how to find B?
 bool queryUN(Term a, Term b) { // human, reptile
   List list = a->inferences->nextNegUniversal;
   while (list != NULL) {
@@ -196,6 +195,15 @@ bool queryUN(Term a, Term b) { // human, reptile
       return true;
     }
     list = list->next;
+  }
+
+  List pos = a->inferences->nextPosUniversal;
+  while (pos != NULL) {
+    Term term = pos->term;
+    if (queryUN(b, term)) {
+      return true;
+    }
+    pos = pos->next;
   }
   return false;
 }
@@ -213,6 +221,14 @@ bool queryPA(Term a, Term b) {
     }
     list = list->next;
   }
+
+  List univ = a->inferences->nextPosUniversal;
+  while (univ != NULL) {
+    if (queryPA(univ->term, b)) {
+      return true;
+    }
+    univ = univ->next;
+  }
   return false;
 }
 // query a particular negative
@@ -228,5 +244,13 @@ bool queryPN(Term a, Term b) {
     }
     list = list->next;
   }
+
+    List univ = a->inferences->nextNegUniversal;
+    while (univ != NULL) {
+      if (queryPN(univ->term, b)) {
+        return true;
+      }
+      univ = univ->next;
+    }
   return false;
 }
