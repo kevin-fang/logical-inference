@@ -228,6 +228,9 @@ bool queryPA(Term a, Term b) {
   if (queryUA(a, b)) {
     return true;
   }
+  if (queryUA(b, a)) {
+    return true;
+  }
   List list = a->inferences->nextPosParticular;
   while (list != NULL) {
     Term term = list->term;
@@ -246,9 +249,13 @@ bool queryPA(Term a, Term b) {
   }
   return false;
 }
+
 // query a particular negative
 bool queryPN(Term a, Term b) {
   if (queryUN(a, b)) {
+    return true;
+  }
+  if (queryUN(b, a)) {
     return true;
   }
   List list = a->inferences->nextNegParticular;

@@ -13,9 +13,11 @@ typedef struct term *Term;
 typedef struct sets *Set;
 typedef struct node *List;
 
+// TODO: implement existence
 struct term {
    String title;
    Set inferences;
+   bool exists;
 };
 
 struct node {

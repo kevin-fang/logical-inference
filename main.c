@@ -113,7 +113,7 @@ bool inList(List list, String title) {
 #define NO "NO"
 
 int main() {
-  testCombined();
+  //testCombined();
 
 	//printf("LOGIC: %d\n", queryUA(cat, kevin));
 
