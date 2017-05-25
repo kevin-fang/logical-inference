@@ -85,7 +85,7 @@ String getSecondTitle(String line, String query) {
   int fourthIndex = strchr(line + thirdIndex, ' ') - line;
   String word = malloc(sizeof(char) * (fourthIndex - index) + 1);
   strcpy(word, line + fourthIndex + 1);
-  word[fourthIndex] = '\0';
+  word[fourthIndex - thirdIndex] = '\0';
   return word;
 }
 
