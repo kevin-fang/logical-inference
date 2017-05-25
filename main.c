@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "logical.h"
 #include <assert.h>
+#include <string.h>
+
+#define printInstructions() printf("Instructions: \nASSERT ALL A are B, QUERY ALL A are B\nASSERT NO A are B, QUERY NO A are B\nASSERT SOME A are B, QUERY SOME A are B\nASSERT NOTSOME A are B, QUERY NOTSOME A are B\n")
+#define DEFAULT_ALLOC_SIZE 10
 
 #define GRN "\x1B[32m"
 #define RESET "\x1B[0m"
@@ -152,6 +156,7 @@ void testCombined() {
   assertUA(human, mortal); // all humans are mortal
   assertUA(greek, human); // all greeks are human
   assert(queryUA(greek, mortal)); // therefore, all greeks are mortal
+  assert(!queryUA(human, greek)); // not all humans are greek
 
   // another good example
   Term apple = makeTerm("Apple");
@@ -167,12 +172,131 @@ void testCombined() {
   printf(GRN "Combined test successful\n" RESET);
 }
 
+char *getLine() {
+	int size = DEFAULT_ALLOC_SIZE;
+	char *str = malloc(size);
+	if (!str) return NULL;
+
+	int i = 0;
+	char c;
+	while ((c = getchar()) != '\n' && c != EOF) {
+		if (i == size - 2) {
+			size = size * 2;
+			char *temp = realloc(str, size);
+			if (!temp) {
+				*str = '\0';
+				return str;
+			}
+			else {
+				str = temp;
+			}
+		}
+		str[i] = c;
+		i++;
+	}
+	str[i] = '\0';
+    if (i == 0) {
+        free(str);
+        str = NULL;
+    }
+    return str;
+}
+
+#define ASSERT "ASSERT"
+#define QUERY "QUERY"
+#define ALL "ALL"
+#define SOME "SOME"
+#define NOTSOME "NOTSOME"
+#define NO "NO"
+
+// returns ALL, SOME, or NO
+String getKeyword(String line, String query) {
+  line = line + strlen(query) + 1;
+  int index = strchr(line, ' ') - line + 1;
+  String word = malloc(sizeof(char) * index + 1);
+  strncpy(word, line, index - 1);
+  word[index] = '\0';
+  return word;
+}
+
+// returns the title of the first object
+String getFirstTitle(String line, String query) {
+  line = line + strlen(query) + 1;
+  int index = strchr(line, ' ') - line + 1;
+  int secondIndex = strchr(line + index + 1, ' ') - line;
+  String word = malloc(sizeof(char) * (secondIndex - index) + 1);
+  strncpy(word, line + index, secondIndex - index);
+  word[secondIndex - index] = '\0';
+  return word;
+}
+
+// returns the title of the second object
+String getSecondTitle(String line, String query) {
+  line = line + strlen(query) + 1;
+  int index = strchr(line, ' ') - line + 1;
+  int secondIndex = strchr(line + index + 1, ' ') - line;
+  int thirdIndex = strchr(line + secondIndex + 1, ' ') - line;
+  int fourthIndex = strchr(line + thirdIndex, ' ') - line;
+  String word = malloc(sizeof(char) * (fourthIndex - index) + 1);
+  strcpy(word, line + fourthIndex + 1);
+  word[fourthIndex] = '\0';
+  return word;
+}
+
+bool inList(List list, String title) {
+  while (list != NULL) {
+    if (strcmp(list->term->title, title) == 0) {
+      return true;
+    }
+    list = list->next;
+  }
+  return false;
+}
 // TODO: allow input from user
 int main() {
+  /*
   testUA();
   testUN();
   testPA();
   testPN();
   testCombined();
-  printf(GRN "\nEverything Successful!\n" RESET);
+  printf(GRN "\nEverything Successful!\n" RESET); */
+
+  printInstructions();
+  printf("> ");
+  String curLine;
+  /* Instructions for use:
+   * ASSERT ALL A are B, QUERY ALL A are B, meaning all A are B
+   * ASSERT NO A are B, QUERY NO A are B, meaning no A are B
+   * ASSERT SOME A are B, QUERY SOME A are B, meaning some A are B
+   * ASSERT NOTSOME A are B, QUERY NOTSOME A are B, meaning some A are not B
+   */
+
+  // list of created terms
+  List terms = NULL;
+  while ((curLine = getLine()) != NULL) {
+    //printf("%s\n", curLine);
+    //curLine = "ASSERT ALL AB are B";
+    if (strncmp(ASSERT, curLine, strlen(ASSERT)) == 0) { // asserting
+      String firstWord = getFirstTitle(curLine, ASSERT);
+      String keyWord = getKeyword(curLine, ASSERT);
+      String secondWord = getSecondTitle(curLine, ASSERT);
+      printf("keyword: %s, firstword: %s, second: %s\n", keyWord, firstWord, secondWord);
+      if (!inList(terms, firstWord)) {
+
+      }
+      if (!inList(terms, secondWord)) {
+        
+      }
+    } else if (strncmp(QUERY, curLine, strlen(QUERY)) == 0) { // querying
+      String firstWord = getFirstTitle(curLine, QUERY);
+      String keyWord = getKeyword(curLine, QUERY);
+      String secondWord = getSecondTitle(curLine, QUERY);
+      printf("keyword: %s, firstword: %s, second: %s\n", keyWord, firstWord, secondWord);
+    } else {
+      printInstructions();
+    }
+
+    printf("> ");
+  }
 }
