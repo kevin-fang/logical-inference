@@ -204,10 +204,6 @@ char *getLine() {
 
 #define ASSERT "ASSERT"
 #define QUERY "QUERY"
-#define ALL "ALL"
-#define SOME "SOME"
-#define NOTSOME "NOTSOME"
-#define NO "NO"
 
 // returns ALL, SOME, or NO
 String getKeyword(String line, String query) {
@@ -243,16 +239,25 @@ String getSecondTitle(String line, String query) {
   return word;
 }
 
-bool inList(List list, String title) {
+Term findInList(List list, String title) {
   while (list != NULL) {
     if (strcmp(list->term->title, title) == 0) {
-      return true;
+      return list->term;
     }
     list = list->next;
   }
-  return false;
+  return NULL;
 }
-// TODO: allow input from user
+
+bool inList(List list, String title) {
+  return findInList(list, title) != NULL;
+}
+
+#define ALL "ALL"
+#define SOME "SOME"
+#define NOTSOME "NOTSOME"
+#define NO "NO"
+
 int main() {
   /*
   testUA();
@@ -275,28 +280,84 @@ int main() {
   // list of created terms
   List terms = NULL;
   while ((curLine = getLine()) != NULL) {
-    //printf("%s\n", curLine);
     //curLine = "ASSERT ALL AB are B";
     if (strncmp(ASSERT, curLine, strlen(ASSERT)) == 0) { // asserting
       String firstWord = getFirstTitle(curLine, ASSERT);
       String keyWord = getKeyword(curLine, ASSERT);
       String secondWord = getSecondTitle(curLine, ASSERT);
-      printf("keyword: %s, firstword: %s, second: %s\n", keyWord, firstWord, secondWord);
+      Term firstTerm;
+      Term secondTerm;
       if (!inList(terms, firstWord)) {
-
+        List list = malloc(sizeof(struct node));
+        firstTerm = makeTerm(firstWord);
+        list->term = firstTerm;
+        list->next = terms;
+        terms = list;
+      } else {
+        firstTerm = findInList(terms, firstWord);
       }
       if (!inList(terms, secondWord)) {
-        
+        List list = malloc(sizeof(struct node));
+        secondTerm = makeTerm(secondWord);
+        list->term = secondTerm;
+        list->next = terms;
+        terms = list;
+      } else {
+        secondTerm = findInList(terms, secondWord);
       }
+      if (strcmp(keyWord, ALL) == 0) {
+        assertUA(firstTerm, secondTerm);
+      } else if (strcmp(keyWord, NO) == 0) {
+        assertUN(firstTerm, secondTerm);
+      } else if (strcmp(keyWord, SOME) == 0) {
+        assertPA(firstTerm, secondTerm);
+      } else if (strcmp(keyWord, NOTSOME) == 0) {
+        assertPN(firstTerm, secondTerm);
+      } else {
+        printInstructions();
+        printf("> ");
+        continue;
+      }
+
     } else if (strncmp(QUERY, curLine, strlen(QUERY)) == 0) { // querying
       String firstWord = getFirstTitle(curLine, QUERY);
       String keyWord = getKeyword(curLine, QUERY);
       String secondWord = getSecondTitle(curLine, QUERY);
-      printf("keyword: %s, firstword: %s, second: %s\n", keyWord, firstWord, secondWord);
+      Term firstTerm;
+      Term secondTerm;
+      if (!inList(terms, firstWord)) {
+        printInstructions();
+        printf("> ");
+        continue;
+      } else {
+        firstTerm = findInList(terms, firstWord);
+      }
+      if (!inList(terms, secondWord)) {
+        printInstructions();
+        printf("> ");
+        continue;
+      } else {
+        secondTerm = findInList(terms, secondWord);
+      }
+
+      if (strcmp(keyWord, ALL) == 0) {
+        printf("%d\n", queryUA(firstTerm, secondTerm));
+      } else if (strcmp(keyWord, NO) == 0) {
+        printf("%d\n", queryUN(firstTerm, secondTerm));
+      } else if (strcmp(keyWord, SOME) == 0) {
+        printf("%d\n", queryPA(firstTerm, secondTerm));
+      } else if (strcmp(keyWord, NOTSOME) == 0) {
+        printf("%d\n", queryPN(firstTerm, secondTerm));
+      } else {
+        printInstructions();
+        printf("> ");
+        continue;
+      }
     } else {
       printInstructions();
+      printf("> ");
+      continue;
     }
-
     printf("> ");
   }
 }
