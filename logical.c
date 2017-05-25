@@ -173,7 +173,7 @@ bool queryUA(Term a, Term b) {
 
 // query a universal negative
 // todo: implement particulars
-bool queryUN(Term a, Term b) {
+bool queryUN(Term a, Term b) { // human, reptile
   List list = a->inferences->nextNegUniversal;
   while (list != NULL) {
     Term term = list->term;

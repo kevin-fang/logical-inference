@@ -41,8 +41,8 @@ void testUA() {
 
     assertUA(termB, termD);
     assert(queryUA(termB, termD));
-    printf("B -> D good\n");
-    printf(GRN "UA Successful!\n\n" RESET);
+    //printf("B -> D\n");
+    printf(GRN "UA Successful!\n" RESET);
 
 }
 
@@ -71,7 +71,7 @@ void testUN() {
     assertUA(termB, termD);
     assert(queryUA(termB, termD));
     //printf("B -> D\n");
-    printf(GRN "UN successful!\n\n" RESET);
+    printf(GRN "UN successful!\n" RESET);
 }
 
 void testPA() {
@@ -93,7 +93,7 @@ void testPA() {
     //printf("B ~!> D \n");
     assert(!queryPA(termA, termC));
     //printf("A ~!> C \n");
-    printf(GRN "PA successful!\n\n" RESET);
+    printf(GRN "PA successful!\n" RESET);
 }
 
 void testPN() {
@@ -117,7 +117,26 @@ void testPN() {
     //printf("A ~!> C \n");
     assert(!queryPN(termB, termD));
     //printf("A ~!> B\n");
-    printf(GRN "PN successful!\n\n" RESET);
+    printf(GRN "PN successful!\n" RESET);
+}
+
+void testCombined() {
+  Term human = makeTerm("Human");
+  Term animal = makeTerm("Animal");
+  Term mammal = makeTerm("Mammal");
+  Term reptile = makeTerm("Reptile");
+  Term bird = makeTerm("Bird");
+
+  assertUA(mammal, animal); // all humans are animals
+  assertUA(human, mammal);
+  assertUN(mammal, reptile);
+
+  assertUA(bird, animal);
+  assertUA(human, reptile); // should not happen
+  assert(queryPA(human, animal));
+  assert(!queryUA(human, bird));
+  assert(!queryUA(bird, mammal));
+  printf(GRN "Combined test successful\n" RESET);
 }
 
 // TODO: allow input from user
@@ -126,5 +145,6 @@ int main() {
   testUN();
   testPA();
   testPN();
+  testCombined();
   printf(GRN "Everything Successful!\n" RESET);
 }
