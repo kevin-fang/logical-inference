@@ -126,6 +126,7 @@ void testCombined() {
   Term mammal = makeTerm("Mammal");
   Term reptile = makeTerm("Reptile");
   Term bird = makeTerm("Bird");
+  Term villain = makeTerm("Villain");
 
   assertUA(mammal, animal); // all mammals are animals
   assertUA(human, mammal); // all humans are mammals
@@ -136,7 +137,33 @@ void testCombined() {
   //assertUA(human, reptile); // should not happen -- assertion error should occur
   assert(queryUA(human, animal)); // some humans are animals
   assert(!queryUA(human, bird)); // not all humans are birds - not enough information
-  assert(!queryUA(bird, mammal)); // not all birds are mammals
+  assert(!queryUA(bird, mammal)); // not all birds are mammals - not enough inforamtion
+
+  assertPA(villain, human); // some villains are human
+
+  assert(queryPA(villain, human)); // assert that some villains are human
+  assert(!queryUA(villain, human)); // not all villains are human
+  assert(!queryUN(villain, human)); // not all villains are not human
+  assert(!queryPN(villain, human)); // not some villains are not human (some villains are human)
+
+  // famous example
+  Term mortal = makeTerm("Mortal");
+  Term greek = makeTerm("Greek");
+  assertUA(human, mortal); // all humans are mortal
+  assertUA(greek, human); // all greeks are human
+  assert(queryUA(greek, mortal)); // therefore, all greeks are mortal
+
+  // another good example
+  Term apple = makeTerm("Apple");
+  Term banana = makeTerm("Banana");
+  Term fruit = makeTerm("Fruit");
+  Term vegetable = makeTerm("Vegetable");
+  assertUN(fruit, vegetable);
+  assertUA(apple, fruit); // all apples are fruit
+  assertUA(banana, fruit); // all bananas are fruit
+  assert(!queryUA(apple, banana)); // therefore, falsely, all apples are bananas
+  // assertUA(apple, vegetable); -> this should cause an assertion error as it's false.
+
   printf(GRN "Combined test successful\n" RESET);
 }
 
@@ -147,5 +174,5 @@ int main() {
   testPA();
   testPN();
   testCombined();
-  printf(GRN "Everything Successful!\n" RESET);
+  printf(GRN "\nEverything Successful!\n" RESET);
 }
