@@ -11,22 +11,22 @@ The classical example:
 > ASSERT ALL Human are Animal
 > QUERY ALL Socrates are Animal
 True
->
-```
-```
+---
 > ASSERT ALL Apple are Fruit
 > ASSERT ALL Banana are Fruit
 > QUERY ALL Apple are Banana
 False
 > ASSERT NO Apple are Banana
 False (system doesn't know enough info)
->
-```
-```
+> ASSERT SOME Apple are Banana
+> False
+---
 Example of a contradiction
 > ASSERT ALL Socrates are Human
 > ASSERT ALL Human are Animal
 > ASSERT NO Animal are Socrates
+Presents a contradiction.
+> ASSERT NOTSOME Socrates are Human
 Presents a contradiction.
 >
 ```

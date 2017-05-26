@@ -17,7 +17,7 @@ typedef struct node *List;
 struct term {
    String title;
    Set inferences;
-   bool exists;
+   // bool exists;
 };
 
 struct node {

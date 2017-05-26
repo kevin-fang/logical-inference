@@ -245,6 +245,9 @@ bool queryPA(Term a, Term b) {
     if (queryUA(univ->term, b)) {
       return true;
     }
+    if (queryPA(univ->term, b) && !queryPA(a, univ->term)) {
+      return true;
+    }
     univ = univ->next;
   }
   return false;
@@ -270,6 +273,9 @@ bool queryPN(Term a, Term b) {
     List univ = a->inferences->nextNegUniversal;
     while (univ != NULL) {
       if (queryUN(univ->term, b)) {
+        return true;
+      }
+      if (queryPN(univ->term, b) && !queryPN(a, univ->term)) {
         return true;
       }
       univ = univ->next;

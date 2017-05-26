@@ -132,7 +132,7 @@ int main() {
   while ((curLine = getLine()) != NULL) {
     if (strstr(curLine, "are") == NULL) {
       printf("Missing keyword: are\n");
-      printInstructions();
+      //printInstructions();
       printf("> ");
       continue;
     }
@@ -184,7 +184,7 @@ int main() {
 				}
       } else {
         printf("Unknown keyword: %s\n", keyWord);
-        printInstructions();
+        //printInstructions();
         printf("> ");
         continue;
       }
@@ -199,7 +199,7 @@ int main() {
       Term secondTerm;
       if (!inList(terms, firstWord)) {
         printf("Bad query: %s\n", firstWord);
-        printInstructions();
+        //printInstructions();
         printf("> ");
         continue;
       } else {
@@ -207,7 +207,7 @@ int main() {
       }
       if (!inList(terms, secondWord)) {
         printf("Bad query: %s\n", secondWord);
-        printInstructions();
+        //printInstructions();
         printf("> ");
         continue;
       } else {
@@ -224,13 +224,13 @@ int main() {
         printf("%s\n", getTrueFalse(queryPN(firstTerm, secondTerm)));
       } else {
         printf("Bad keyword: %s\n", keyWord);
-        printInstructions();
+        //printInstructions();
         printf("> ");
         continue;
       }
     } else {
       printf("Bad input: %s\n", curLine);
-      printInstructions();
+      //printInstructions();
       printf("> ");
       continue;
     }

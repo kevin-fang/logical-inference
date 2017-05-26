@@ -157,8 +157,21 @@ void testCombined() {
   assertUN(fruit, vegetable);
   assertUA(apple, fruit); // all apples are fruit
   assertUA(banana, fruit); // all bananas are fruit
+  assert(!queryPA(apple, banana)); // that doesn't mean some apples are bananas
   assert(!queryUA(apple, banana)); // therefore, falsely, all apples are bananas
   // assertUA(apple, vegetable); -> this should cause an assertion error as it's false.
+
+  Term orange = makeTerm("Orange");
+  Term rottenFruit = makeTerm("Rotten Fruit");
+  Term book = makeTerm("Book");
+  Term rottenApple = makeTerm("Rotten apple");
+  assertPN(orange, rottenFruit); // some oranges are rotten fruit
+  assertUN(book, rottenFruit); // no books are rotten fruit
+  assertUA(rottenApple, rottenFruit); // rotten apples are rotten fruit
+
+  // no books are rotten apples,
+  assert(queryUN(rottenApple, book));
+  assert(!queryUN(rottenApple, orange));
 
   printf(GRN "Combined test successful\n" RESET);
 }
