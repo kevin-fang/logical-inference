@@ -8,8 +8,10 @@
 #define printInstructions() printf("Instructions: \nASSERT ALL A are B, QUERY ALL A are B\nASSERT NO A are B, QUERY NO A are B\nASSERT SOME A are B, QUERY SOME A are B\nASSERT NOTSOME A are B, QUERY NOTSOME A are B\n\n")
 #define DEFAULT_ALLOC_SIZE 10
 
-#define GRN "\x1B[32m"
-#define RESET "\x1B[0m"
+//#define GRN "\x1B[32m"
+#define GRN ""
+//#define RESET "\x1B[0m"
+#define RESET ""
 /* There are four relationships that can occur between two terms:
  * Universal Affirmative: All A are B
  * Universal Negative: No A are B
@@ -113,9 +115,18 @@ bool inList(List list, String title) {
 #define NO "NO"
 
 int main() {
-  //testCombined();
+  testCombined();
 
-	//printf("LOGIC: %d\n", queryUA(cat, kevin));
+  Term a = makeTerm("A");
+  Term b = makeTerm("B");
+  Term c = makeTerm("C");
+
+  assertUA(a, b);
+  assertUA(b, a);
+  assertPA(a, c);
+  assert(queryPA(b, c));
+  printf(GRN "Last test successful\n" RESET);
+
 
   printInstructions();
   printf("> ");

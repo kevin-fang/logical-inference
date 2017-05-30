@@ -3,8 +3,10 @@
 #include <assert.h>
 #include "test.h"
 
-#define GRN "\x1B[32m"
-#define RESET "\x1B[0m"
+//#define GRN "\x1B[32m"
+#define GRN ""
+//#define RESET "\x1B[0m"
+#define RESET ""
 
 // test universal affirmatives
 void testUA() {
@@ -172,6 +174,8 @@ void testCombined() {
   // no books are rotten apples,
   assert(queryUN(rottenApple, book));
   assert(!queryUN(rottenApple, orange));
+
+
 
   printf(GRN "Combined test successful\n" RESET);
 }

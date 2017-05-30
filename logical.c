@@ -200,8 +200,10 @@ bool queryUA(Term a, Term b) {
       return true;
     }
     // loops through all the universal positives of each term, returning if the term is found
-    if (queryUA(term, b)) {
-      return true;
+    if (term != NULL){
+      if (queryUA(term, b)) {
+        return true;
+      }
     }
     list = list->next;
   }
@@ -227,6 +229,7 @@ bool queryUN(Term a, Term b) {
     aNegative = aNegative->next;
   }
 
+/*
   // check if a reverse negative exists
   // loops through all universal negatives of b
   List bNegative = b->inferences->nextNegUniversal;
@@ -235,8 +238,9 @@ bool queryUN(Term a, Term b) {
     if (term == a) {
       return true;
     }
+    bNegative = bNegative->next;
   }
-
+*/
   // handle case: if ALL A are C and NO B are C, then no A are B
   // loops through the universal positives and checks if any universal negatives of the sort exist
   List pos = a->inferences->nextPosUniversal;
@@ -261,9 +265,10 @@ C ~?>B CRASH
 // query a particular affirmative
 bool queryPA(Term a, Term b) {
   // checks if universal affiramtives already exist
+  /*
   if (queryUA(a, b) || queryUA(b, a)) {
     return true;
-  }
+  } */
   // loop through particular positives, checking if one already exists.
   // don't need to go further as not universal
   List list = a->inferences->nextPosParticular;
@@ -279,7 +284,7 @@ bool queryPA(Term a, Term b) {
   List univ = a->inferences->nextPosUniversal;
   while (univ != NULL) {
     // check if either a universal affirmative already exists or if a particular affirmative exists
-    if (queryUA(univ->term, b) || (queryPA(univ->term, b) && !queryPA(a, univ->term))) {
+    if ((queryPA(univ->term, b)) || queryUA(univ->term, b)) {
       return true;
     }
     univ = univ->next;
