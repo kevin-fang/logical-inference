@@ -26,7 +26,7 @@
 
 char *getLine() {
 	int size = DEFAULT_ALLOC_SIZE;
-	char *str = malloc(size);
+	String str = malloc(size);
 	if (!str) return NULL;
 
 	int i = 0;
@@ -34,7 +34,7 @@ char *getLine() {
 	while ((c = getchar()) != '\n' && c != EOF) {
 		if (i == size - 2) {
 			size = size * 2;
-			char *temp = realloc(str, size);
+			String temp = realloc(str, size);
 			if (!temp) {
 				*str = '\0';
 				return str;
@@ -105,7 +105,7 @@ Term findInList(List list, String title) {
   return NULL;
 }
 
-bool inList(List list, String title) {
+bool stringInList(List list, String title) {
   return findInList(list, title) != NULL;
 }
 
@@ -115,18 +115,7 @@ bool inList(List list, String title) {
 #define NO "NO"
 
 int main() {
-  testCombined();
-
-  Term a = makeTerm("A");
-  Term b = makeTerm("B");
-  Term c = makeTerm("C");
-
-  assertUA(a, b);
-  assertUA(b, a);
-  assertPA(a, c);
-  assert(queryPA(b, c));
-  printf(GRN "Last test successful\n" RESET);
-
+  //testCombined();
 
   printInstructions();
   printf("> ");
@@ -148,14 +137,14 @@ int main() {
       continue;
     }
     //curLine = "ASSERT ALL AB are B";
-    if (strncmp(ASSERT, curLine, strlen(ASSERT)) == 0) { // asserting
+    if (strstr(curLine, ASSERT) != NULL) { // asserting
       String firstWord = getFirstTitle(curLine, ASSERT);
       String keyWord = getKeyword(curLine, ASSERT);
       String secondWord = getSecondTitle(curLine, ASSERT);
 			//printf("assert first word:%s, second word:%s, keyword:%s;", firstWord, secondWord, keyWord);
       Term firstTerm;
       Term secondTerm;
-      if (!inList(terms, firstWord)) {
+      if (!stringInList(terms, firstWord)) {
         List list = malloc(sizeof(struct node));
         firstTerm = makeTerm(firstWord);
         list->term = firstTerm;
@@ -164,7 +153,7 @@ int main() {
       } else {
         firstTerm = findInList(terms, firstWord);
       }
-      if (!inList(terms, secondWord)) {
+      if (!stringInList(terms, secondWord)) {
         List list = malloc(sizeof(struct node));
         secondTerm = makeTerm(secondWord);
         list->term = secondTerm;
@@ -173,22 +162,22 @@ int main() {
       } else {
         secondTerm = findInList(terms, secondWord);
       }
-      if (strcmp(keyWord, ALL) == 0) {
+      if (strstr(curLine, ALL) != NULL) {
         if (!assertUA(firstTerm, secondTerm)) {
           printf("Presents a contradiction.\n> ");
 					continue;
         };
-      } else if (strcmp(keyWord, NO) == 0) {
+      } else if (strstr(curLine, NO) != NULL) {
         if (!assertUN(firstTerm, secondTerm)) {
 					printf("Presents a contradiction.\n> ");
 					continue;
 				}
-      } else if (strcmp(keyWord, SOME) == 0) {
+      } else if (strstr(keyWord, SOME) != NULL) {
         if (!assertPA(firstTerm, secondTerm)) {
 					printf("Presents a contradiction\n> ");
 					continue;
 				}
-      } else if (strcmp(keyWord, NOTSOME) == 0) {
+      } else if (strstr(keyWord, NOTSOME) != NULL) {
         if (!assertPN(firstTerm, secondTerm)) {
 					printf("Presents a contradiction.\n> ");
 					continue;
@@ -199,8 +188,7 @@ int main() {
         printf("> ");
         continue;
       }
-
-    } else if (strncmp(QUERY, curLine, strlen(QUERY)) == 0) { // querying
+    } else if (strstr(curLine, QUERY) != NULL) { // querying
       String firstWord = getFirstTitle(curLine, QUERY);
       String keyWord = getKeyword(curLine, QUERY);
       String secondWord = getSecondTitle(curLine, QUERY);
@@ -208,7 +196,7 @@ int main() {
 			//printf("query first word:%s, second word:%s, keyword:%s;", firstWord, secondWord, keyWord);
       Term firstTerm;
       Term secondTerm;
-      if (!inList(terms, firstWord)) {
+      if (!stringInList(terms, firstWord)) {
         printf("Bad query: %s\n", firstWord);
         //printInstructions();
         printf("> ");
@@ -216,7 +204,7 @@ int main() {
       } else {
         firstTerm = findInList(terms, firstWord);
       }
-      if (!inList(terms, secondWord)) {
+      if (!stringInList(terms, secondWord)) {
         printf("Bad query: %s\n", secondWord);
         //printInstructions();
         printf("> ");
@@ -225,20 +213,20 @@ int main() {
         secondTerm = findInList(terms, secondWord);
       }
 
-      if (strcmp(keyWord, ALL) == 0) {
+      if (strstr(keyWord, ALL) != NULL) {
         printf("%s\n", getTrueFalse(queryUA(firstTerm, secondTerm)));
-      } else if (strcmp(keyWord, NO) == 0) {
+      } else if (strstr(keyWord, NO) != NULL) {
         printf("%s\n", getTrueFalse(queryUN(firstTerm, secondTerm)));
-      } else if (strcmp(keyWord, SOME) == 0) {
+      } else if (strstr(keyWord, SOME) != NULL) {
         printf("%s\n", getTrueFalse(queryPA(firstTerm, secondTerm)));
-      } else if (strcmp(keyWord, NOTSOME) == 0) {
+      } else if (strstr(keyWord, NOTSOME) != NULL) {
         printf("%s\n", getTrueFalse(queryPN(firstTerm, secondTerm)));
       } else {
         printf("Bad keyword: %s\n", keyWord);
         //printInstructions();
         printf("> ");
         continue;
-      }
+			}
     } else {
       printf("Bad input: %s\n", curLine);
       //printInstructions();
@@ -247,4 +235,5 @@ int main() {
     }
     printf("> ");
   }
+	free(curLine);
 }

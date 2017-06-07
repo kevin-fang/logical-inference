@@ -1,2 +1,2 @@
 logical: *.c *.h
-	gcc *.c -o logical -Wall -Werror -g --std=c99
+	gcc *.c -o logical -Wall -Werror -g --std=c99 -fsanitize=address

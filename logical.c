@@ -185,7 +185,25 @@ bool assertPN(Term a, Term b) {
   return true;
 }
 
+bool inList(List list, Term term) {
+  while (list != NULL) {
+    if (list->term == term) {
+      return true;
+    }
+    list = list->next;
+  }
+  return false;
+}
+
 // Querying premises for the system
+
+// returns if there is a positive loop in the system
+bool inPosLoop(Term a, Term b) {
+  List posA = a->inferences->nextPosUniversal;
+  List posB = b->inferences->nextPosUniversal;
+
+  return inList(posA, b) && inList(posB, a);
+}
 
 // query a universal affirmative
 bool queryUA(Term a, Term b) {
@@ -200,7 +218,11 @@ bool queryUA(Term a, Term b) {
       return true;
     }
     // loops through all the universal positives of each term, returning if the term is found
-    if (term != NULL){
+    if (term != NULL) {
+      if (inPosLoop(term, b)) {
+        list = list->next;
+        continue;
+      }
       if (queryUA(term, b)) {
         return true;
       }
@@ -264,11 +286,8 @@ C ~?>B CRASH
 
 // query a particular affirmative
 bool queryPA(Term a, Term b) {
-  // checks if universal affiramtives already exist
-  /*
-  if (queryUA(a, b) || queryUA(b, a)) {
-    return true;
-  } */
+  if (a == b) return true; // if they're equal, then of course it's true
+
   // loop through particular positives, checking if one already exists.
   // don't need to go further as not universal
   List list = a->inferences->nextPosParticular;
@@ -284,7 +303,11 @@ bool queryPA(Term a, Term b) {
   List univ = a->inferences->nextPosUniversal;
   while (univ != NULL) {
     // check if either a universal affirmative already exists or if a particular affirmative exists
-    if ((queryPA(univ->term, b)) || queryUA(univ->term, b)) {
+    if (inPosLoop(univ->term, b)) {
+      univ = univ->next;
+      continue;
+    }
+    if (queryPA(univ->term, b)) {
       return true;
     }
     univ = univ->next;
@@ -294,12 +317,7 @@ bool queryPA(Term a, Term b) {
 
 // query a particular negative
 bool queryPN(Term a, Term b) {
-  if (queryUN(a, b)) {
-    return true;
-  }
-  if (queryUN(b, a)) {
-    return true;
-  }
+  if (queryUN(a, b) || queryUN(b, a)) return true;
   List list = a->inferences->nextNegParticular;
   while (list != NULL) {
     Term term = list->term;
@@ -309,15 +327,15 @@ bool queryPN(Term a, Term b) {
     list = list->next;
   }
 
-    List univ = a->inferences->nextNegUniversal;
-    while (univ != NULL) {
-      if (queryUN(univ->term, b)) {
-        return true;
-      }
-      if (queryPN(univ->term, b) && !queryPN(a, univ->term)) {
-        return true;
-      }
-      univ = univ->next;
+  List univ = a->inferences->nextNegUniversal;
+  while (univ != NULL) {
+    if (queryUN(univ->term, b)) {
+      return true;
     }
+    if (queryPN(univ->term, b) && !queryPN(a, univ->term)) {
+      return true;
+    }
+    univ = univ->next;
+  }
   return false;
 }
