@@ -23,6 +23,12 @@
  */
 
 
+#define ALL "ALL"
+#define SOME "SOME"
+#define NOTSOME "NOTSOME"
+#define NO "NO"
+
+
 
 char *getLine() {
 	int size = DEFAULT_ALLOC_SIZE;
@@ -57,38 +63,44 @@ char *getLine() {
 #define ASSERT "ASSERT"
 #define QUERY "QUERY"
 
-// returns ALL, SOME, or NO
-String getKeyword(String line, String query) {
-  line = line + strlen(query) + 1;
-  int index = strchr(line, ' ') - line + 1;
-  String word = malloc(sizeof(char) * index + 1);
-  strncpy(word, line, index - 1);
-  word[index] = '\0';
-  return word;
+// returns ALL, SOME, NO, or NOTSOME
+String getKeyword(String line, String keyWord) {
+	String loc;
+	int queryLen;
+	if ((loc = strstr(line, ALL)) != NULL) {
+		queryLen = strlen(ALL);
+	} else if ((loc = strstr(line, SOME)) != NULL) {
+		queryLen = strlen(SOME);
+	} else if ((loc = strstr(line, NO)) != NULL) {
+		queryLen = strlen(NO);
+	} else if ((loc = strstr(line, NOTSOME)) != NULL) {
+		queryLen = strlen(NOTSOME);
+	}
+
+	String toReturn = malloc(sizeof(char) * queryLen + 1);
+	strncpy(toReturn, loc, queryLen + 1);
+	toReturn[queryLen] = '\0';
+	return toReturn;
 }
 
 // returns the title of the first object
-String getFirstTitle(String line, String query) {
-  line = line + strlen(query) + 1;
-  int index = strchr(line, ' ') - line + 1;
-  int secondIndex = strchr(line + index + 1, ' ') - line;
-  String word = malloc(sizeof(char) * (secondIndex - index) + 1);
-  strncpy(word, line + index, secondIndex - index);
-  word[secondIndex - index] = '\0';
-  return word;
+String getFirstTitle(String line, String keyWord) {
+
+	String index = strstr(line, keyWord) + strlen(keyWord) + 1;
+	String finishIndex = strstr(line, "are") - 1;
+	int diff = finishIndex - index;
+
+	String toReturn = malloc(sizeof(char) * diff + 1);
+	strncpy(toReturn, index, diff);
+	toReturn[diff] = '\0';
+	return toReturn;
 }
 
+#define ARE "are"
 // returns the title of the second object
-String getSecondTitle(String line, String query) {
-  line = line + strlen(query) + 1;
-  int index = strchr(line, ' ') - line + 1;
-  int secondIndex = strchr(line + index + 1, ' ') - line;
-  int thirdIndex = strchr(line + secondIndex + 1, ' ') - line;
-  int fourthIndex = strchr(line + thirdIndex, ' ') - line;
-  String word = malloc(sizeof(char) * (fourthIndex - index) + 1);
-  strcpy(word, line + fourthIndex + 1);
-  word[fourthIndex - index] = '\0';
-  return word;
+String getSecondTitle(String line, String keyWord) {
+	String index = strstr(line, ARE) + strlen(ARE) + 1;
+	return index;
 }
 
 String getTrueFalse(bool b) {
@@ -108,15 +120,9 @@ Term findInList(List list, String title) {
 bool stringInList(List list, String title) {
   return findInList(list, title) != NULL;
 }
-
-#define ALL "ALL"
-#define SOME "SOME"
-#define NOTSOME "NOTSOME"
-#define NO "NO"
-
 int main() {
-  //testCombined();
-
+	// perform tests
+  testCombined();
   printInstructions();
   printf("> ");
   String curLine;
@@ -133,14 +139,10 @@ int main() {
     if (strstr(curLine, "are") == NULL) {
       printf("Missing keyword: are\n");
       //printInstructions();
-      printf("> ");
-      continue;
-    }
-    //curLine = "ASSERT ALL AB are B";
-    if (strstr(curLine, ASSERT) != NULL) { // asserting
-      String firstWord = getFirstTitle(curLine, ASSERT);
+    } else if (strstr(curLine, ASSERT) != NULL) { // asserting
       String keyWord = getKeyword(curLine, ASSERT);
-      String secondWord = getSecondTitle(curLine, ASSERT);
+	    String firstWord = getFirstTitle(curLine, keyWord);
+      String secondWord = getSecondTitle(curLine, keyWord);
 			//printf("assert first word:%s, second word:%s, keyword:%s;", firstWord, secondWord, keyWord);
       Term firstTerm;
       Term secondTerm;
@@ -164,34 +166,28 @@ int main() {
       }
       if (strstr(curLine, ALL) != NULL) {
         if (!assertUA(firstTerm, secondTerm)) {
-          printf("Presents a contradiction.\n> ");
-					continue;
+          printf("Presents a contradiction.\n");
         };
       } else if (strstr(curLine, NO) != NULL) {
         if (!assertUN(firstTerm, secondTerm)) {
-					printf("Presents a contradiction.\n> ");
-					continue;
+					printf("Presents a contradiction.\n");
 				}
       } else if (strstr(keyWord, SOME) != NULL) {
         if (!assertPA(firstTerm, secondTerm)) {
-					printf("Presents a contradiction\n> ");
-					continue;
+					printf("Presents a contradiction\n");
 				}
       } else if (strstr(keyWord, NOTSOME) != NULL) {
         if (!assertPN(firstTerm, secondTerm)) {
-					printf("Presents a contradiction.\n> ");
-					continue;
+					printf("Presents a contradiction.\n");
 				}
       } else {
         printf("Unknown keyword: %s\n", keyWord);
         //printInstructions();
-        printf("> ");
-        continue;
       }
     } else if (strstr(curLine, QUERY) != NULL) { // querying
-      String firstWord = getFirstTitle(curLine, QUERY);
       String keyWord = getKeyword(curLine, QUERY);
-      String secondWord = getSecondTitle(curLine, QUERY);
+			String firstWord = getFirstTitle(curLine, keyWord);
+      String secondWord = getSecondTitle(curLine, keyWord);
 
 			//printf("query first word:%s, second word:%s, keyword:%s;", firstWord, secondWord, keyWord);
       Term firstTerm;
@@ -224,14 +220,10 @@ int main() {
       } else {
         printf("Bad keyword: %s\n", keyWord);
         //printInstructions();
-        printf("> ");
-        continue;
 			}
     } else {
       printf("Bad input: %s\n", curLine);
       //printInstructions();
-      printf("> ");
-      continue;
     }
     printf("> ");
   }
