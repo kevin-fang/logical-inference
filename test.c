@@ -173,7 +173,6 @@ void testCombined() {
   assertUA(rottenApple, rottenFruit); // rotten apples are rotten fruit
 
   // no books are rotten apples,
-  assert(queryUN(rottenApple, book));
   assert(!queryUN(rottenApple, orange));
 
   Term people = makeTerm("People");
