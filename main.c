@@ -22,13 +22,10 @@
  * Particular is denoted using ~>
  */
 
-
 #define ALL "ALL"
 #define SOME "SOME"
 #define NOTSOME "NOTSOME"
 #define NO "NO"
-
-
 
 char *getLine() {
 	int size = DEFAULT_ALLOC_SIZE;
@@ -57,7 +54,7 @@ char *getLine() {
         free(str);
         str = NULL;
     }
-    return str;
+  return str;
 }
 
 #define ASSERT "ASSERT"
@@ -85,7 +82,6 @@ String getKeyword(String line, String keyWord) {
 
 // returns the title of the first object
 String getFirstTitle(String line, String keyWord) {
-
 	String index = strstr(line, keyWord) + strlen(keyWord) + 1;
 	String finishIndex = strstr(line, "are") - 1;
 	int diff = finishIndex - index;
@@ -120,11 +116,13 @@ Term findInList(List list, String title) {
 bool stringInList(List list, String title) {
   return findInList(list, title) != NULL;
 }
+
 int main() {
 	// perform tests
   testCombined();
   printInstructions();
   printf("> ");
+
   String curLine;
   /* Instructions for use:
    * ASSERT ALL A are B, QUERY ALL A are B, meaning all A are B

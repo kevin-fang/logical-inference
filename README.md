@@ -1,8 +1,10 @@
 # Logical Inference
 
-Final project for CS3.
+Final project for CS3 by Kevin Fang.
 
-A logical inference machine. Run `make`, and then run `logical` for a logical inference system. Make sure that you use the exact spelling when making assertions and queries. The system is case sensitive and will check for contradictions before asserting
+A logical inference machine that runs on Aristotelian logic. Run `make`, and then run `logical` for a logical inference system. Make sure that you use the exact spelling when making assertions and queries. The system is case sensitive and will check for contradictions before asserting.
+
+Read more: https://plato.stanford.edu/entries/aristotle-logic/
 
 ## Examples
 ```

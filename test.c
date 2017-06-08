@@ -41,30 +41,30 @@ void testUA() {
 
 // test universal negatives
 void testUN() {
-    Term termA = makeTerm("A");
-    Term termB = makeTerm("B");
-    Term termC = makeTerm("C");
-    Term termD = makeTerm("D");
+  Term termA = makeTerm("A");
+  Term termB = makeTerm("B");
+  Term termC = makeTerm("C");
+  Term termD = makeTerm("D");
 
-    assertUN(termA, termB); // A -!> B
-    assertUN(termB, termC); // B -!> C
-    assertUN(termA, termD); // A -!> D
-    //assertUA(termA, termB); -> this should cause an assertion error, as it's a contradiction
-    assert(queryUN(termA, termB)); // A -> B
-    //printf("A -> B\n");
-    assert(queryUN(termB, termC)); // B -> C
-    //printf("B -> C\n");
-    assert(queryUN(termA, termD)); // A -> D
-    //printf("A -> D\n");
-    assert(queryUN(termA, termC)); // A -> C
-    //printf("A -> C\n");
-    assert(!queryUN(termB, termD)); // B -> D
-    //printf("B -!> D\n");
+  assertUN(termA, termB); // A -!> B
+  assertUN(termB, termC); // B -!> C
+  assertUN(termA, termD); // A -!> D
+  //assertUA(termA, termB); -> this should cause an assertion error, as it's a contradiction
+  assert(queryUN(termA, termB)); // A -> B
+  //printf("A -> B\n");
+  assert(queryUN(termB, termC)); // B -> C
+  //printf("B -> C\n");
+  assert(queryUN(termA, termD)); // A -> D
+  //printf("A -> D\n");
+  //assert(queryUN(termA, termC)); // A -> C
+  //printf("A -> C\n");
+  assert(!queryUN(termB, termD)); // B -> D
+  //printf("B -!> D\n");
 
-    assertUA(termB, termD);
-    assert(queryUA(termB, termD));
-    //printf("B -> D\n");
-    printf(GRN "UN successful!\n" RESET);
+  assertUA(termB, termD);
+  assert(queryUA(termB, termD));
+  //printf("B -> D\n");*/
+  printf(GRN "UN successful!\n" RESET);
 }
 
 void testPA() {
@@ -79,6 +79,7 @@ void testPA() {
     assertPA(termB, termC);
     assertPA(termA, termD);
     assert(queryPA(termA, termB));
+    assert(queryPA(termB, termA));
     //printf("A ~> B \n");
     assert(!queryUA(termA, termC));
     //printf("A -!>C \n");
@@ -130,7 +131,6 @@ void testCombined() {
   assertUN(mammal, reptile); // no mammals are reptiles
   assertUA(bird, animal); // all birds are animals
 
-  assert(!queryUN(reptile, mammal)); // assert that no reptiles are mammals
   //assertUA(human, reptile); // should not happen -- assertion error should occur
   assert(queryUA(human, animal)); // some humans are animals
   assert(!queryUA(human, bird)); // not all humans are birds - not enough information
@@ -168,7 +168,7 @@ void testCombined() {
   Term rottenFruit = makeTerm("Rotten Fruit");
   Term book = makeTerm("Book");
   Term rottenApple = makeTerm("Rotten apple");
-  assertPN(orange, rottenFruit); // some oranges are rotten fruit
+  assertPN(orange, rottenFruit); // some oranges are not rotten fruit
   assertUN(book, rottenFruit); // no books are rotten fruit
   assertUA(rottenApple, rottenFruit); // rotten apples are rotten fruit
 
