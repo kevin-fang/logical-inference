@@ -20,8 +20,12 @@ True
 False
 > ASSERT NO Apple are Banana
 False (system doesn't know enough info)
-> ASSERT SOME Apple are Banana
-> False
+> QUERY SOME Apple are Banana
+False
+---
+> ASSERT SOME Humans are Mammals
+> QUERY SOME Mammals are Humans
+True
 ---
 Example of a contradiction
 > ASSERT ALL Socrates are Human
@@ -30,5 +34,4 @@ Example of a contradiction
 Presents a contradiction.
 > ASSERT NOTSOME Socrates are Human
 Presents a contradiction.
->
 ```
